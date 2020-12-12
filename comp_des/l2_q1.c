@@ -320,52 +320,7 @@ struct token getNextToken(FILE *f)
 	}
 	return tkn;
 }
-const char *directives[] = {"#include","#define","#if"};
 
-int is_directive(char *str)
-{
-	for(int i = 0; i < sizeof(directives)/sizeof(char *); i++)
-	{
-		int len = strlen(directives[i]);
-		if(strncmp(str, directives[i], len) == 0)
-			return 1;
-	}
-	return 0;
-}
-
-void cleanFile(FILE* in) {
-	FILE* clean = fopen("temp.clean", "w");
-	char line[256];
-	while(fgets(line, 256, in))
-	{
-		if(!is_directive(line))
-		{ 
-			fputs(line, clean);
-		}
-	}
-	fclose(clean);
-	clean = fopen("temp.clean", "r");
-	FILE* clean2 = fopen("temp2.clean", "w");
-	char c;
-	while ((c = getc(clean))!=EOF) {
-		if (c=='/') {
-			c = getc(clean);
-			if (c == '/') {
-				while((c=getc(clean))!='\n');
-			}
-			else if (c == '*') {
-				do {
-					while (c!='*')c=getc(clean);
-					c = getc(clean);
-				} while(c!='/');
-			}
-			else putc(c, clean2);
-		}
-		else {
-			putc(c, clean2);
-		}
-	}
-}
 
 int main(int argc, char** argv)
 {
@@ -379,9 +334,6 @@ int main(int argc, char** argv)
 	}
 
 	struct token t;
-	cleanFile(f);
-	fclose(f);
-	f = fopen(f, "r");
 	while((t = getNextToken(f)).row != -1)
 		printf("<%s, %d, %d, %s>\n",t.lexeme,t.row,t.col,t.type);
     

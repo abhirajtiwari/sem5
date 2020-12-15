@@ -1,38 +1,34 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <assert.h>
-#include <sys/wait.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <limits.h>
-#include <fcntl.h>
 
-#define FIFO_NAME "/tmp/my_fifo"
-
-int main()
-{
-	int pipe_fd;
-	int res;
-	int open_mode = O_RDONLY;
-	int buf;
-
-	printf("Process %d opening read-only FIFO\n", getpid());
-	pipe_fd = open(FIFO_NAME, open_mode);
-
-	if(pipe_fd!=-1)
-	{
-		res = read(pipe_fd, &buf, sizeof(int));
-		printf("%d\n", buf);
-		close(pipe_fd);
-	}
-	else
-	{
-		perror("pipe");
-		exit(EXIT_FAILURE);
-	}
-	printf("Process %d finished\nBytes read = %d\n", getpid(), res);
-	exit(EXIT_SUCCESS);
-	return 0;
-}
+// C program to implement one side of FIFO 
+// This side reads first, then reads 
+#include <stdio.h> 
+#include <string.h> 
+#include <fcntl.h> 
+#include <sys/stat.h> 
+#include <sys/types.h> 
+#include <unistd.h> 
+  
+int main() 
+{ 
+    int fd1; 
+  
+    char * myfifo = "/tmp/myfifo"; 
+    mkfifo(myfifo, 0777); 
+  
+    char str1[80], str2[80]; 
+    while (1) 
+    { 
+        fd1 = open(myfifo,O_RDONLY); 
+        read(fd1, str1, 80); 
+  
+        printf("User1: %s\n", str1); 
+        close(fd1); 
+  
+        fd1 = open(myfifo,O_WRONLY); 
+		printf(">> ");
+        fgets(str2, 80, stdin); 
+        write(fd1, str2, strlen(str2)+1); 
+        close(fd1); 
+    } 
+    return 0; 
+} 

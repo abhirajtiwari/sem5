@@ -149,7 +149,7 @@ int main()
 	fclose(fb);
 
 	fa = fopen("temp.c", "r");
-	fb = fopen("week8out.c", "w");
+	fb = fopen("out8.c", "w");
 	ca = getc(fa);
 	while (ca != EOF)
 	{
@@ -159,7 +159,7 @@ int main()
 	fclose(fa);
 	fclose(fb);
 	remove("temp.c");
-	f1 = fopen("week8out.c", "r");
+	f1 = fopen("out8.c", "r");
 	if (f1 == NULL)
 	{
 		printf("Error! File cannot be opened!\n");
